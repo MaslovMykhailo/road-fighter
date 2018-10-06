@@ -1,129 +1,123 @@
 import React, { Component } from 'react';
-import '../css/road.css'
-import carImg from '../img/car.png';
-import Road from './classes/Road';
-import Car from './classes/Car';
 
+import * as loadImg from './functions/loadImages';
+import RoadCanvas from './RoadCanvas';
 
 class App extends Component {
   constructor(props) {
     super(props);
     
-    this.canvas = React.createRef();
-    
-    this.carImg = new Image();
-    this.carImg.src = carImg;
-    this.carImg.onload = () => this.forceUpdate();
+    this.carsImg = loadImg.cars;
+    loadImg.onLoad.then(() => this.forceUpdate());
     
     this.state = {
-      ctx: null,
-      width: null,
-      height: null,
-      road: null,
-      car: null,
-      carPosition: {
-        x: null,
-        y: null
-      },
-      carSpeed: 1,
-      stop: true,
-      stopping: false
+      commonProgress: 0,
+      keyUpDownHandlers: {
+        up: {
+          left: [], top: [], right: [], bottom: []
+        },
+        down: {
+          left: [], top: [], right: [], bottom: []
+        }
+      }
     };
     
-    this.moving = this.moving.bind(this);
-    this.stopping = this.stopping.bind(this);
+    this.changeProgressHandler = this.changeProgressHandler.bind(this);
+    this.addKeyUpDownHandler = this.addKeyUpDownHandler.bind(this);
+    this.onKeyUpDown = this.onKeyUpDown.bind(this);
+  }
+  
+  changeProgressHandler(change) {
+    let { commonProgress } = this.state;
+    commonProgress += change;
+    
+    this.setState({
+      commonProgress
+    });
+  }
+  
+  addKeyUpDownHandler(handlerType, ...args) {
+    const { keyUpDownHandlers } = this.state;
+    const handlerByType = Object.assign({}, keyUpDownHandlers[handlerType]);
+    
+    args.forEach(arg => {
+      let arrowType = arg[0];
+      const handler = arg[1];
+      
+      handlerByType[arrowType].push(handler);
+    });
+    keyUpDownHandlers[handlerType] = handlerByType;
+    
+    this.setState({
+      keyUpDownHandlers: Object.assign({}, keyUpDownHandlers)
+    });
+  }
+  
+  onKeyUpDown(type) {
+    const { keyUpDownHandlers } = this.state;
+    const handlerByType = keyUpDownHandlers[type];
+    
+    return (e) => {
+      switch (e.keyCode) {
+        case 37: {
+          handlerByType.left.forEach(handler => handler());
+          return;
+        }
+        case 38: {
+          handlerByType.top.forEach(handler => handler());
+          return;
+        }
+        case 39: {
+          handlerByType.right.forEach(handler => handler());
+          return;
+        }
+        case 40: {
+          handlerByType.bottom.forEach(handler => handler());
+          return;
+        }
+        default:
+          return;
+      }
+    }
   }
   
   componentDidMount() {
-    const width = this.canvas.current.offsetWidth;
-    const height = this.canvas.current.offsetHeight;
+    const testHandlers = (type, arrow) => () => {
+      console.log(type, arrow);
+    };
   
-    this.canvas.current.width = width;
-    this.canvas.current.height = height;
-    
-    this.setState({
-      ctx: this.canvas.current.getContext('2d'),
-      width, height,
-      road: new Road(width, height),
-      car: new Car(52, 100, this.carImg),
-      carPosition: {
-        x: width/2,
-        y: 0
-      }
-    });
-  }
+    this.addKeyUpDownHandler('down',
+      ['left', testHandlers('down', 'left')],
+      ['top', testHandlers('down', 'top')],
+      ['right', testHandlers('down', 'right')],
+      ['bottom', testHandlers('down', 'bottom')]
+    );
   
-  stopping() {
-    const self = this;
-    
-    this.setState({
-      stopping: true
-    });
-    
-    requestAnimationFrame(function animate() {
-      const { carSpeed, carPosition, road, stop } = self.state;
-    
-      road.addShift(carSpeed - 0.1);
-      
-      self.setState({
-        carSpeed: carSpeed - 0.3 <= 1 ? 1 : carSpeed - 0.3,
-        carPosition: {
-          x: carPosition.x,
-          y: carSpeed - 0.1,
-        }
-      });
-    
-      if (!stop && carSpeed > 1.1) {
-        requestAnimationFrame(animate);
-      } else {
-        console.log(carSpeed);
+    this.addKeyUpDownHandler('up',
+      ['left', testHandlers('up', 'left')],
+      ['top', testHandlers('up', 'top')],
+      ['right', testHandlers('up', 'right')],
+      ['bottom', testHandlers('up', 'bottom')]
+    );
   
-        self.setState({
-          stop: true,
-          carSpeed: 1
-        })
-      }
-    });
-  }
-  
-  moving() {
-    const self = this;
-    
-    this.setState({
-      stop: false,
-      stopping: false
-    });
-    
-    requestAnimationFrame(function animate() {
-      const { carSpeed, carPosition, stop, road, stopping } = self.state;
-      
-      road.addShift(carSpeed + 0.025);
-      
-      self.setState({
-        carSpeed: carSpeed + 0.05 <= 12 ? carSpeed + 0.05 : carSpeed,
-        carPosition: {
-          x: carPosition.x,
-          y: carSpeed + 0.025,
-        }
-      });
-    
-      if (!stopping && !stop) requestAnimationFrame(animate);
-    });
-  }
+    this.props.doc.onkeydown = this.onKeyUpDown('down');
+    this.props.doc.onkeyup = this.onKeyUpDown('up');
+  };
   
   render() {
-    const { ctx, width, height, road, car } = this.state;
-    
-    if (ctx) {
-      ctx.clearRect(0, 0, width, height);
-      road.draw(ctx);
-      car.draw(ctx, width/2, height - 200);
-    }
+    const { carsImg, changeProgressHandler, addKeyUpDownHandler } = this;
     
     return (
-      <canvas className={'road'} ref={this.canvas} onMouseDown={this.moving} onMouseUp={this.stopping}>
-      </canvas>
-    )
+      <RoadCanvas
+        userCar={{
+          img: carsImg[0],
+          width: 70,
+          height: 133
+        }}
+        changeProgress={changeProgressHandler}
+        addKeyUpDownHandler={addKeyUpDownHandler}
+      />
+    );
   }
 }
 
