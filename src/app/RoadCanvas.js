@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import animation from './functions/animation';
 import combineFunc from './functions/combineFunc';
 import rn from './functions/randomNumber';
+import carsCollision from './functions/carsCollision';
 import '../css/road.css';
 import Road from './classes/Road';
 import Car from './classes/Car';
@@ -26,7 +27,6 @@ class RoadCanvas extends Component {
         positionX: null,
         racing: false,
         braking: false,
-        stop: true,
         moveByX: false,
         maxSpeed: 12
       },
@@ -45,6 +45,7 @@ class RoadCanvas extends Component {
     this.endBrakingHandler = this.endBrakingHandler.bind(this);
   
     this.botCarsMove = this.botCarsMove.bind(this);
+    this.collisionHandler = this.collisionHandler.bind(this);
   }
   
   componentDidMount() {
@@ -148,7 +149,7 @@ class RoadCanvas extends Component {
       
       this.setState({
         playerCarState: Object.assign({}, playerCarState, {
-          racing: true
+          racing: true, braking: false
         })
       });
   
@@ -159,8 +160,12 @@ class RoadCanvas extends Component {
           
           road.addShift(speed + 0.05);
           this.props.changeProgress(speed + 0.05);
-  
           let newSpeed = speed + 0.1;
+          
+          if (typeof this.collisionHandler() !== 'object') {
+            newSpeed = 0;
+          }
+          
           this.setState({
             playerCarState: Object.assign({}, playerCarState, {
               speed: newSpeed <= maxSpeed ? newSpeed : maxSpeed,
@@ -222,6 +227,9 @@ class RoadCanvas extends Component {
           },
           conditionalFunc: () => {
             return this.state.playerCarState.speed >= 0.1;
+          },
+          endAnimateFunc: () => {
+            this.endBrakingHandler();
           }
         };
     
@@ -278,6 +286,25 @@ class RoadCanvas extends Component {
     };
   
     animation(animateOptions);
+  }
+  
+  collisionHandler() {
+    const { playerCar, playerCarState, botCarsState, road } = this.state;
+    const { width, height } = playerCar;
+    
+    const userCar = {
+      positionX: playerCarState.positionX + 3,
+      positionY: road.shift + 200,
+      width: width - 6, height
+    };
+    
+    const botCars = botCarsState.map(car => ({
+      positionX: car.positionX + 3,
+      positionY: car.positionY,
+      width: width - 6, height
+    }));
+    
+    return carsCollision(userCar, botCars);
   }
   
   render() {
