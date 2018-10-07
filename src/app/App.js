@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import * as loadImg from './functions/loadImages';
 import RoadCanvas from './RoadCanvas';
 
+
 class App extends Component {
   constructor(props) {
     super(props);
     
-    this.carsImg = loadImg.cars;
+    this.playerCars = loadImg.playerCars;
+    this.botCars = loadImg.botCars;
     loadImg.onLoad.then(() => this.forceUpdate());
     
     this.state = {
@@ -24,6 +26,7 @@ class App extends Component {
     
     this.changeProgressHandler = this.changeProgressHandler.bind(this);
     this.addKeyUpDownHandler = this.addKeyUpDownHandler.bind(this);
+    this.clearKeyUpDownHandlers = this.clearKeyUpDownHandlers.bind(this);
     this.onKeyUpDown = this.onKeyUpDown.bind(this);
   }
   
@@ -50,6 +53,20 @@ class App extends Component {
     
     this.setState({
       keyUpDownHandlers: Object.assign({}, keyUpDownHandlers)
+    });
+  }
+  
+  clearKeyUpDownHandlers() {
+    console.log('clear');
+    this.setState({
+      keyUpDownHandlers: {
+        up: {
+          left: [], top: [], right: [], bottom: []
+        },
+        down: {
+          left: [], top: [], right: [], bottom: []
+        }
+      }
     });
   }
   
@@ -105,17 +122,27 @@ class App extends Component {
   };
   
   render() {
-    const { carsImg, changeProgressHandler, addKeyUpDownHandler } = this;
+    const { playerCars, botCars,
+      changeProgressHandler,
+      addKeyUpDownHandler,
+      clearKeyUpDownHandlers
+    } = this;
+    
+    let imgW = 55;
+    let imgH = 100;
+    const botCarsImgs = botCars.map(img => ({ img, width: imgW, height: imgH }));
     
     return (
       <RoadCanvas
         userCar={{
-          img: carsImg[0],
-          width: 70,
-          height: 133
+          img: playerCars[0],
+          width: imgW,
+          height: imgH
         }}
+        botCars={botCarsImgs}
         changeProgress={changeProgressHandler}
         addKeyUpDownHandler={addKeyUpDownHandler}
+        clearKeyUpDownHandlers={clearKeyUpDownHandlers}
       />
     );
   }
