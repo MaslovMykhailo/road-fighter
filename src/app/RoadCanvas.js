@@ -27,6 +27,7 @@ class RoadCanvas extends Component {
         racing: false,
         braking: false,
         stop: true,
+        moveByX: false,
         maxSpeed: 12
       },
       
@@ -34,7 +35,8 @@ class RoadCanvas extends Component {
       botCarsState: [],
     };
     
-    this.moveXHandler = this.moveXHandler.bind(this);
+    this.startMoveXHandler = this.startMoveXHandler.bind(this);
+    this.endMoveXHandler = this.endMoveXHandler.bind(this);
     
     this.startRacingHandler = this.startRacingHandler.bind(this);
     this.endRacingHandler = this.endRacingHandler.bind(this);
@@ -47,11 +49,12 @@ class RoadCanvas extends Component {
   
   componentDidMount() {
     const {
-      moveXHandler,
+      startMoveXHandler,
       startRacingHandler,
       endRacingHandler,
       startBrakingHandler,
       endBrakingHandler,
+      endMoveXHandler
     } = this;
     
     const { userCar, botCars, addKeyUpDownHandler } = this.props;
@@ -76,40 +79,66 @@ class RoadCanvas extends Component {
       botCarsState: botCars.map((car, i) => ({
         speed: rn(1, 6),
         positionX: 15 + i*width/4,
-        positionY: height
+        positionY: 2*height + (i%2 ? 0.5*height : - 0.5*height)
       }))
     });
     
     addKeyUpDownHandler('down',
-      ['left', moveXHandler('left')],
-      ['top', startRacingHandler],
-      ['right', moveXHandler('right')],
+      ['left', startMoveXHandler('left')],
+      ['top', combineFunc(endBrakingHandler, startRacingHandler)],
+      ['right', startMoveXHandler('right')],
       ['bottom', startBrakingHandler],
     );
   
     addKeyUpDownHandler('up',
+      ['left', endMoveXHandler],
       ['top', combineFunc(endRacingHandler, startBrakingHandler)],
+      ['right', endMoveXHandler],
       ['bottom', endBrakingHandler]
     );
     
     this.botCarsMove();
   }
   
-  moveXHandler(direction) {
+  startMoveXHandler(direction) {
     return () => {
-      const { playerCarState, width } = this.state;
-      let { positionX, speed } = playerCarState;
-  
-      let changedPosition = direction === 'left' ?
-        positionX - speed :
-        positionX + speed;
-      
-      if (changedPosition > -2 && changedPosition + this.props.userCar.width - 3 < width) {
+       const {playerCarState} = this.state;
+       if (!playerCarState.moveByX) {
         this.setState({
-          playerCarState: Object.assign({}, playerCarState, { positionX: changedPosition })
+          playerCarState: Object.assign({}, playerCarState, { moveByX: true })
         });
+        
+        const animateOptions = {
+          animateFunc: () => {
+            const { playerCarState, width } = this.state;
+            let { positionX, speed } = playerCarState;
+  
+            let changedPosition = direction === 'left' ?
+              positionX - speed/4 :
+              positionX + speed/4;
+  
+            if (changedPosition > -2 && changedPosition + this.props.userCar.width - 3 < width) {
+              this.setState({
+                playerCarState: Object.assign({}, playerCarState, { positionX: changedPosition })
+              });
+            }
+          },
+          conditionalFunc: () => {
+            return this.state.playerCarState.moveByX;
+          }
+        };
+        
+        animation(animateOptions);
       }
+      
     }
+  }
+  
+  endMoveXHandler() {
+    const { playerCarState } = this.state;
+    this.setState({
+      playerCarState: Object.assign({}, playerCarState, { moveByX: false })
+    });
   }
   
   startRacingHandler() {
@@ -119,8 +148,7 @@ class RoadCanvas extends Component {
       
       this.setState({
         playerCarState: Object.assign({}, playerCarState, {
-          racing: true,
-          stop: false
+          racing: true
         })
       });
   
@@ -129,12 +157,13 @@ class RoadCanvas extends Component {
           const { playerCarState } = this.state;
           const { speed, maxSpeed } = playerCarState;
           
-          road.addShift(speed + 0.025);
-          this.props.changeProgress(speed + 0.025);
-          
+          road.addShift(speed + 0.05);
+          this.props.changeProgress(speed + 0.05);
+  
+          let newSpeed = speed + 0.1;
           this.setState({
             playerCarState: Object.assign({}, playerCarState, {
-              speed: speed + 0.05 <= maxSpeed ? speed + 0.05 : maxSpeed,
+              speed: newSpeed <= maxSpeed ? newSpeed : maxSpeed,
             })
           });
         },
@@ -143,8 +172,8 @@ class RoadCanvas extends Component {
           if (road.shift > road.height-road.canvasHeight) {
             this.props.clearKeyUpDownHandlers();
             this.setState({
-              isFinished: false,
-              playerCarState: Object.assign({}, playerCarState, {speed: 0, stop: true})
+              isFinished: true,
+              playerCarState: Object.assign({}, playerCarState, { speed: 0 })
             });
             return false;
           }
@@ -166,41 +195,38 @@ class RoadCanvas extends Component {
   }
   
   startBrakingHandler() {
-    const { playerCarState, road, isFinished } = this.state;
-    if (!playerCarState.braking && !playerCarState.stop && !isFinished) {
-      this.setState({
-        playerCarState: Object.assign({}, playerCarState, {
-          braking: true,
-        })
-      });
-  
-      const animateOptions = {
-        animateFunc: () => {
-          const { playerCarState } = this.state;
-          const { speed } = playerCarState;
-          
-          road.addShift(speed - 0.1);
-          this.props.changeProgress(speed - 0.1);
-          
-          this.setState({
-            playerCarState: Object.assign({}, playerCarState, {
-              speed: speed - 0.2 <= 0 ? 0 : speed - 0.2,
-            })
-          });
-        },
-        conditionalFunc: () => {
-          return this.state.playerCarState.speed >= 0.1;
-        },
-        endAnimateFunc: () => {
-          const { playerCarState } = this.state;
-          this.setState({
-            playerCarState: Object.assign({}, playerCarState, { braking: false })
-          });
-        }
-      };
-  
-      animation(animateOptions);
-    }
+      const { playerCarState, road, isFinished } = this.state;
+      if (!playerCarState.braking && !isFinished) {
+        this.setState({
+          playerCarState: Object.assign({}, playerCarState, {
+            braking: true,
+          })
+        });
+    
+        const animateOptions = {
+          animateFunc: () => {
+            const {playerCarState} = this.state;
+            const {speed, racing} = playerCarState;
+        
+            if (!racing) {
+              road.addShift(speed - 0.1);
+              this.props.changeProgress(speed - 0.1);
+            }
+           
+            let newSpeed = speed - 0.2 + racing/10;
+            this.setState({
+              playerCarState: Object.assign({}, playerCarState, {
+                speed: newSpeed <= 0 ? 0 : newSpeed,
+              })
+            });
+          },
+          conditionalFunc: () => {
+            return this.state.playerCarState.speed >= 0.1;
+          }
+        };
+    
+        animation(animateOptions);
+      }
   }
   
   endBrakingHandler() {
@@ -222,12 +248,16 @@ class RoadCanvas extends Component {
           let newPositionY = oldState.positionY + oldState.speed;
           let newSpeed = oldState.speed;
           
-          if (newPositionY < road.shift - 0.5 * height) {
+          if (newPositionY < road.shift - 0.2 * height) {
             newPositionY = road.shift + 1.5 * height ;
             newSpeed = rn(1, 6);
             
             let newBotCar = this.props.botCars[rn(0, 3)];
             newCars.splice(i, 1, new Car(newBotCar.width, newBotCar.height, newBotCar.img))
+          }
+          
+          if (newPositionY > road.shift + 2*height) {
+            newPositionY = road.shift + 1.5 * height ;
           }
           
           return {
@@ -255,8 +285,8 @@ class RoadCanvas extends Component {
     
     if (ctx) {
       ctx.clearRect(0, 0, width, height);
-      road.draw(ctx);
       
+      road.draw(ctx);
       playerCar.draw(ctx, playerCarState.positionX, height - 200);
       botCars.forEach((car, i) => {
         car.draw(ctx, botCarsState[i].positionX, height + road.shift - botCarsState[i].positionY);
