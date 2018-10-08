@@ -219,6 +219,10 @@ class RoadCanvas extends Component {
             }
            
             let newSpeed = speed - 0.2 + racing/10;
+            if (typeof this.collisionHandler() !== 'object') {
+              newSpeed = 0;
+            }
+            
             this.setState({
               playerCarState: Object.assign({}, playerCarState, {
                 speed: newSpeed <= 0 ? 0 : newSpeed,

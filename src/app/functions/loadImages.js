@@ -15,6 +15,8 @@ import building2 from '../../img/buildings/house2.png';
 import building3 from '../../img/buildings/house3.png';
 import building4 from '../../img/buildings/house4.png';
 
+import start from '../../img/progress/start.png';
+import finish from '../../img/progress/finish.png';
 
 const createImages = srcArray => srcArray.map(imgSrc => {
   const newImg = new Image();
@@ -30,7 +32,9 @@ export const trees = createImages([tree1, tree2]);
 
 export const buildings = createImages([building1, building2, building3, building4]);
 
-export const onLoad = Promise.all(playerCars.concat(botCars, trees, buildings)
+export const progressImg = createImages([start, finish]);
+
+export const onLoad = Promise.all(playerCars.concat(botCars, trees, buildings, progressImg)
   .map(img => new Promise(resolve => img.onload = () => resolve()))
 );
 

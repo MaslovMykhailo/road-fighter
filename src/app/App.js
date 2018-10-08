@@ -4,7 +4,7 @@ import '../css/app.css';
 import * as loadImg from './functions/loadImages';
 import RoadCanvas from './RoadCanvas';
 import StreetCanvas from './StreetCanvas';
-
+import ProgressCanvas from './ProgressCanvas';
 
 class App extends Component {
   constructor(props) {
@@ -130,13 +130,14 @@ class App extends Component {
     
     const { commonProgress } = this.state;
     
-    let long = 30;
+    let long = 50;
     let imgW = 55;
     let imgH = 100;
     const botCarsImgs = loadImg.botCars.map(img => ({ img, width: imgW, height: imgH }));
     
     return (
       <div className={'app'}>
+        <ProgressCanvas progress={commonProgress} long={long} userCar={playerCars[0]}/>
         <StreetCanvas progress={commonProgress} side={'left'} long={long}/>
         <RoadCanvas
           long={long}
