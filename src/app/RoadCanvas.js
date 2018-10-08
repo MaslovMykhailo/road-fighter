@@ -86,7 +86,7 @@ class RoadCanvas extends Component {
     
     addKeyUpDownHandler('down',
       ['left', startMoveXHandler('left')],
-      ['top', combineFunc(endBrakingHandler, startRacingHandler)],
+      ['top', combineFunc(endBrakingHandler,startRacingHandler)],
       ['right', startMoveXHandler('right')],
       ['bottom', startBrakingHandler],
     );
@@ -149,18 +149,20 @@ class RoadCanvas extends Component {
       
       this.setState({
         playerCarState: Object.assign({}, playerCarState, {
-          racing: true, braking: false
+          racing: true,
         })
       });
   
       const animateOptions = {
         animateFunc: () => {
           const { playerCarState } = this.state;
-          const { speed, maxSpeed } = playerCarState;
+          const { speed, maxSpeed, braking } = playerCarState;
           
           road.addShift(speed + 0.05);
           this.props.changeProgress(speed + 0.05);
           let newSpeed = speed + 0.1;
+          
+          if (braking) newSpeed = speed;
           
           if (typeof this.collisionHandler() !== 'object') {
             newSpeed = 0;
@@ -220,7 +222,7 @@ class RoadCanvas extends Component {
            
             let newSpeed = speed - 0.2 + racing/10;
             if (typeof this.collisionHandler() !== 'object') {
-              newSpeed = 0;
+              newSpeed = -5;
             }
             
             this.setState({
