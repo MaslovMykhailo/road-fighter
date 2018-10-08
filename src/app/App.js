@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
+import '../css/app.css';
 import * as loadImg from './functions/loadImages';
 import RoadCanvas from './RoadCanvas';
+import StreetCanvas from './StreetCanvas';
 
 
 class App extends Component {
@@ -9,7 +11,6 @@ class App extends Component {
     super(props);
     
     this.playerCars = loadImg.playerCars;
-    this.botCars = loadImg.botCars;
     loadImg.onLoad.then(() => this.forceUpdate());
     
     this.state = {
@@ -57,7 +58,6 @@ class App extends Component {
   }
   
   clearKeyUpDownHandlers() {
-    console.log('clear');
     this.setState({
       keyUpDownHandlers: {
         up: {
@@ -99,51 +99,59 @@ class App extends Component {
   }
   
   componentDidMount() {
-    const testHandlers = (type, arrow) => () => {
-      console.log(type, arrow);
-    };
-  
-    this.addKeyUpDownHandler('down',
-      ['left', testHandlers('down', 'left')],
-      ['top', testHandlers('down', 'top')],
-      ['right', testHandlers('down', 'right')],
-      ['bottom', testHandlers('down', 'bottom')]
-    );
-  
-    this.addKeyUpDownHandler('up',
-      ['left', testHandlers('up', 'left')],
-      ['top', testHandlers('up', 'top')],
-      ['right', testHandlers('up', 'right')],
-      ['bottom', testHandlers('up', 'bottom')]
-    );
+    // const testHandlers = (type, arrow) => () => {
+    //   console.log(type, arrow);
+    // };
+    //
+    // this.addKeyUpDownHandler('down',
+    //   ['left', testHandlers('down', 'left')],
+    //   ['top', testHandlers('down', 'top')],
+    //   ['right', testHandlers('down', 'right')],
+    //   ['bottom', testHandlers('down', 'bottom')]
+    // );
+    //
+    // this.addKeyUpDownHandler('up',
+    //   ['left', testHandlers('up', 'left')],
+    //   ['top', testHandlers('up', 'top')],
+    //   ['right', testHandlers('up', 'right')],
+    //   ['bottom', testHandlers('up', 'bottom')]
+    // );
   
     this.props.doc.onkeydown = this.onKeyUpDown('down');
     this.props.doc.onkeyup = this.onKeyUpDown('up');
   };
   
   render() {
-    const { playerCars, botCars,
+    const { playerCars,
       changeProgressHandler,
       addKeyUpDownHandler,
       clearKeyUpDownHandlers
     } = this;
     
+    const { commonProgress } = this.state;
+    
+    let long = 30;
     let imgW = 55;
     let imgH = 100;
-    const botCarsImgs = botCars.map(img => ({ img, width: imgW, height: imgH }));
+    const botCarsImgs = loadImg.botCars.map(img => ({ img, width: imgW, height: imgH }));
     
     return (
-      <RoadCanvas
-        userCar={{
-          img: playerCars[0],
-          width: imgW,
-          height: imgH
-        }}
-        botCars={botCarsImgs}
-        changeProgress={changeProgressHandler}
-        addKeyUpDownHandler={addKeyUpDownHandler}
-        clearKeyUpDownHandlers={clearKeyUpDownHandlers}
-      />
+      <div className={'app'}>
+        <StreetCanvas progress={commonProgress} side={'left'} long={long}/>
+        <RoadCanvas
+          long={long}
+          userCar={{
+            img: playerCars[0],
+            width: imgW,
+            height: imgH
+          }}
+          botCars={botCarsImgs}
+          changeProgress={changeProgressHandler}
+          addKeyUpDownHandler={addKeyUpDownHandler}
+          clearKeyUpDownHandlers={clearKeyUpDownHandlers}
+        />
+        <StreetCanvas progress={commonProgress} side={'right'} long={long}/>
+      </div>
     );
   }
 }

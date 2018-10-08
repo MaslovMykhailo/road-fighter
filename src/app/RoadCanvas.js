@@ -58,7 +58,7 @@ class RoadCanvas extends Component {
       endMoveXHandler
     } = this;
     
-    const { userCar, botCars, addKeyUpDownHandler } = this.props;
+    const { long ,userCar, botCars, addKeyUpDownHandler } = this.props;
     const canvasElem = this.canvas.current;
     
     const width = canvasElem.offsetWidth;
@@ -68,9 +68,9 @@ class RoadCanvas extends Component {
     canvasElem.height = height;
     
     this.setState({
-      ctx: this.canvas.current.getContext('2d'),
+      ctx: canvasElem.getContext('2d'),
       width, height,
-      road: new Road(width, height, 50),
+      road: new Road(width, height, long),
       
       playerCar: new Car(userCar.width, userCar.height, userCar.img),
       playerCarState: Object.assign({}, this.state.playerCarState,
