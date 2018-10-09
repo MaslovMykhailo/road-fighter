@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import '../css/app.css';
-import Start from './window/Start';
+import ChooseCar from './window/ChooseCar';
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class App extends Component {
   render() {
     return (
       <div className={'app'}>
-        <Start />
+        <ChooseCar />
       </div>
     )
   }

@@ -1,0 +1,85 @@
+.window {
+    margin: auto;
+    width: 750px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #EEEEEF;
+}
+
+.window__header {
+    height: 200px;
+    background-size: cover;
+}
+
+.choose-level-background {
+    background: url("../img/window/landscape.jpg") center no-repeat;
+}
+
+.choose-car-background {
+    background: url("../img/window/header.png") center no-repeat;
+}
+
+.window__caption {
+    font-size: 56px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+.window__button-container {
+    margin-bottom: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.choose-level-button {
+    margin: 20px 50px;
+}
+
+.window-back {
+    align-self: left;
+    margin: 20px;
+}
+
+.car-container {
+    display: flex;
+    justify-content: center;
+}
+
+.car-button-container {
+    width: 150px;
+    min-height: 150px;
+    margin: 20px;
+}
+
+.container-checked {
+    background: #FF005E;
+}
+
+.choose-car-button {
+    width: 100px;
+    height: 100px;
+    background: #EEEEEF;
+}
+
+.choose-car-button:hover {
+    width: 100px;
+    height: 100px;
+    background: #425B64;
+}
+
+.car-image {
+    height: 90%;
+}
+
+.window-next {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.text-right {
+    justify-content: flex-end;
+}
