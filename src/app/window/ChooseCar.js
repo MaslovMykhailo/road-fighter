@@ -8,7 +8,7 @@ class ChooseCar extends Component {
     super(props);
     
     this.state = {
-      cars: [true, false, false]
+      cars: new Array(3).fill(false).map((v, i) => props.playerCar === i )
     };
     
     this.onClickHandler = this.onClickHandler.bind(this);

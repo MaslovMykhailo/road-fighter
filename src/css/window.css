@@ -13,6 +13,11 @@
     background-size: cover;
 }
 
+.window__header--small {
+    height: 100px;
+    background: #FF1C88;
+}
+
 .choose-level-background {
     background: url("../img/window/landscape.jpg") center no-repeat;
 }
@@ -41,6 +46,16 @@
 .window-back {
     align-self: left;
     margin: 20px;
+}
+
+.window__text {
+    text-align: center;
+    color: #425B64;
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    width: 150px;
+    margin: 10px auto;
+    line-height: 26px;
 }
 
 .car-container {
@@ -82,4 +97,23 @@
 
 .text-right {
     justify-content: flex-end;
+}
+
+.window__middle-wrapper {
+    display: flex;
+    justify-content: left;
+    align-items: flex-end;
+}
+
+.arrows {
+    height: 200px;
+}
+
+.start-button {
+    display: block;
+    margin: 0 auto;
+    font-size: 56px;
+    font-weight: bold;
+    width: 30%;
+    height: 90px;
 }

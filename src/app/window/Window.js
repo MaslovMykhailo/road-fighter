@@ -5,6 +5,7 @@ import Start from './Start';
 import ChooseLevel from './ChooseLevel';
 import Game from '../game/Game';
 import ChooseCar from './ChooseCar';
+import Instruction from './Instruction';
 
 
 const Window = ({ appState, handlers }) => {
@@ -30,9 +31,18 @@ const Window = ({ appState, handlers }) => {
         <ChooseCar
           changePlayerCarHandler={changePlayerCarHandler}
           backClickHandler={changeWindow(types.CHOOSE_LEVEL)}
-          forwardClickHandler={changeWindow(types.GAME)}
+          forwardClickHandler={changeWindow(types.INSTRUCTION)}
+          playerCar={appState.playerCar}
         />
       );
+    }
+    case types.INSTRUCTION: {
+      return (
+        <Instruction
+          backClickHandler={changeWindow(types.CHOOSE_CAR)}
+          onClickHandler={changeWindow(types.GAME)}
+        />
+      )
     }
     case types.GAME: {
       const { doc, playerCar} = appState;
