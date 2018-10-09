@@ -18,6 +18,7 @@ class ChooseCar extends Component {
     return () => {
       const newCars = new Array(3).fill(false);
       newCars[i] = true;
+      this.props.changePlayerCarHandler(i);
       
       this.setState({
         cars: newCars
@@ -37,6 +38,8 @@ class ChooseCar extends Component {
       </div>
     ));
     
+    const { backClickHandler, forwardClickHandler } = this.props;
+    
     return (
       <div className="window mdl-card mdl-shadow--2dp">
         <div className="window__header choose-car-background text-right mdl-card__title">
@@ -45,10 +48,16 @@ class ChooseCar extends Component {
         <div className="car-container">
           {cars}
         </div>
-        <button className="window-back mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+        <button
+          className="window-back mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+          onClick={backClickHandler}
+        >
           <i className="material-icons">arrow_back</i>
         </button>
-        <button className="window-next mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+        <button
+          className="window-next mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+          onClick={forwardClickHandler}
+        >
           <i className="material-icons">arrow_forward</i>
         </button>
       </div>

@@ -10,9 +10,6 @@ class Game extends Component {
   constructor(props) {
     super(props);
     
-    this.playerCars = loadImg.playerCars;
-    loadImg.onLoad.then(() => this.forceUpdate());
-    
     this.state = {
       commonProgress: 0,
       keyUpDownHandlers: {
@@ -99,46 +96,29 @@ class Game extends Component {
   }
   
   componentDidMount() {
-    // const testHandlers = (type, arrow) => () => {
-    //   console.log(type, arrow);
-    // };
-    //
-    // this.addKeyUpDownHandler('down',
-    //   ['left', testHandlers('down', 'left')],
-    //   ['top', testHandlers('down', 'top')],
-    //   ['right', testHandlers('down', 'right')],
-    //   ['bottom', testHandlers('down', 'bottom')]
-    // );
-    //
-    // this.addKeyUpDownHandler('up',
-    //   ['left', testHandlers('up', 'left')],
-    //   ['top', testHandlers('up', 'top')],
-    //   ['right', testHandlers('up', 'right')],
-    //   ['bottom', testHandlers('up', 'bottom')]
-    // );
-  
     this.props.doc.onkeydown = this.onKeyUpDown('down');
     this.props.doc.onkeyup = this.onKeyUpDown('up');
   };
   
   render() {
-    const { playerCars,
+    const {
       changeProgressHandler,
       addKeyUpDownHandler,
       clearKeyUpDownHandlers
     } = this;
     
     const { commonProgress } = this.state;
+    const playerCar = loadImg.playerCars[this.props.playerCar];
     
     let long = 50;
     let imgW = 55;
     let imgH = 100;
-    const userCar = { img: playerCars[0], width: imgW, height: imgH };
+    const userCar = { img: playerCar, width: imgW, height: imgH };
     const botCarsImgs = loadImg.botCars.map(img => ({ img, width: imgW, height: imgH }));
     
     return (
       <div className={'game'}>
-        <ProgressCanvas progress={commonProgress} long={long} userCar={playerCars[0]}/>
+        <ProgressCanvas progress={commonProgress} long={long} userCar={playerCar}/>
         <StreetCanvas progress={commonProgress} side={'left'} long={long}/>
         <RoadCanvas
           long={long}

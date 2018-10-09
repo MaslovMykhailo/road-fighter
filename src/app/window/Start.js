@@ -20,7 +20,10 @@ const Start = props => (
       </span>
       <img className={'title__image'} src={finish} alt={'finish'}/>
     </div>
-    <button className="play-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+    <button
+      className="play-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+      onClick={props.onClickHandler}
+    >
       PLAY
     </button>
   </div>

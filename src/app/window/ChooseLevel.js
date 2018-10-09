@@ -3,11 +3,13 @@ import React from 'react';
 import '../../css/window.css';
 
 const ChooseLevel = props => {
+  const { onClickHandler, backClickHandler } = props;
+  
   const levelButtons = new Array(5).fill(null).map((e, i) => (
     <button
       className="choose-level-button mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
       key={i}
-      onClick={null}
+      onClick={onClickHandler(i)}
     >
       {`~ Level${i+1} ~`}
     </button>
@@ -21,7 +23,10 @@ const ChooseLevel = props => {
     <div className={'window__button-container'}>
     {levelButtons}
     </div>
-    <button className="window-back mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+    <button
+      className="window-back mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+      onClick={backClickHandler}
+    >
       <i className="material-icons">arrow_back</i>
     </button>
   </div>
