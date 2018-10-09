@@ -1,0 +1,52 @@
+.start {
+    width: 100%;
+    height: 100%;
+    background: #EEEEEF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.start__image__wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #FF1C88;
+}
+
+.start__image {
+    height: 200px;
+    margin: 0 15px;
+}
+
+.start__mirror {
+    transform: scaleX(-1);
+}
+
+.title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title__text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 64px;
+    font-weight: bold;
+    color: #425B64;
+}
+
+.title__image {
+    height: 200px;
+    margin: 0 30px;
+}
+
+.play-button {
+    display: block;
+    margin: 0 auto 30px;
+    font-size: 64px;
+    font-weight: bold;
+    width: 30%;
+    height: 75px;
+}
