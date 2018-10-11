@@ -5,7 +5,11 @@ import playerCar3 from '../../img/playerCars/playerCar3.png';
 import botCar1 from '../../img/botCars/car1.png';
 import botCar2 from '../../img/botCars/car2.png';
 import botCar3 from '../../img/botCars/car3.png';
-import botCar4 from '../../img/botCars/car4.png';
+import botCar4 from '../../img/botCars/car7.png';
+import botCar5 from '../../img/botCars/car5.png';
+import botCar6 from '../../img/botCars/car6.png';
+import botCar7 from '../../img/botCars/car4.png';
+import botCar8 from '../../img/botCars/car8.png';
 
 import tree1 from '../../img/trees/tree1.png';
 import tree2 from '../../img/trees/tree2.png';
@@ -26,7 +30,7 @@ const createImages = srcArray => srcArray.map(imgSrc => {
 
 export const playerCars = createImages([playerCar1, playerCar2, playerCar3]);
 
-export const botCars = createImages([botCar1, botCar3, botCar2, botCar4]);
+export const botCars = createImages([botCar1, botCar3, botCar2, botCar4, botCar5, botCar6, botCar7, botCar8]);
 
 export const trees = createImages([tree1, tree2]);
 

@@ -75,9 +75,9 @@ class RoadCanvas extends Component {
       playerCar: new Car(userCar.width, userCar.height, userCar.img),
       playerCarState: Object.assign({}, this.state.playerCarState,
         {positionX: width / 2 - userCar.width / 2}),
-      
-      botCars: botCars.map(car => new Car(car.width, car.height, car.img)),
-      botCarsState: botCars.map((car, i) => ({
+      botCars: new Array(4).fill(null).map((v, i) =>
+        new Car(botCars[i].width, botCars[i].height, botCars[i].img)),
+      botCarsState: new Array(4).fill(null).map((v, i) => ({
         speed: rn(1, 6),
         positionX: 15 + i*width/4,
         positionY: 2*height + (i%2 ? 0.5*height : - 0.5*height)
@@ -266,7 +266,7 @@ class RoadCanvas extends Component {
             newPositionY = road.shift + 1.5 * height ;
             newSpeed = rn(1, 6);
             
-            let newBotCar = this.props.botCars[rn(0, 3)];
+            let newBotCar = this.props.botCars[rn(0, 7)];
             newCars.splice(i, 1, new Car(newBotCar.width, newBotCar.height, newBotCar.img))
           }
           
