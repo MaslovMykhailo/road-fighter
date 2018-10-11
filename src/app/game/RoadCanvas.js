@@ -165,7 +165,8 @@ class RoadCanvas extends Component {
           if (braking) newSpeed = speed;
           
           if (typeof this.collisionHandler() !== 'object') {
-            newSpeed = 0;
+            newSpeed = -newSpeed/5;
+            this.props.collisionInc();
           }
           
           this.setState({
@@ -222,7 +223,8 @@ class RoadCanvas extends Component {
            
             let newSpeed = speed - 0.2 + racing/10;
             if (typeof this.collisionHandler() !== 'object') {
-              newSpeed = -5;
+              newSpeed = 0;
+              this.props.collisionInc();
             }
             
             this.setState({

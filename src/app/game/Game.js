@@ -5,6 +5,7 @@ import * as loadImg from '../functions/loadImages';
 import RoadCanvas from './RoadCanvas';
 import StreetCanvas from './StreetCanvas';
 import ProgressCanvas from './ProgressCanvas';
+import ScorePanel from './ScorePanel';
 
 class Game extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class Game extends Component {
     
     this.state = {
       commonProgress: 0,
+      collisionCount: 0,
       keyUpDownHandlers: {
         up: {
           left: [], top: [], right: [], bottom: []
@@ -26,6 +28,7 @@ class Game extends Component {
     this.addKeyUpDownHandler = this.addKeyUpDownHandler.bind(this);
     this.clearKeyUpDownHandlers = this.clearKeyUpDownHandlers.bind(this);
     this.onKeyUpDown = this.onKeyUpDown.bind(this);
+    this.collisionInc = this.collisionInc.bind(this);
   }
   
   changeProgressHandler(change) {
@@ -95,6 +98,12 @@ class Game extends Component {
     }
   }
   
+  collisionInc() {
+    this.setState(state => ({
+      collisionCount: state.collisionCount + 1,
+    }));
+  }
+  
   componentDidMount() {
     this.props.doc.onkeydown = this.onKeyUpDown('down');
     this.props.doc.onkeyup = this.onKeyUpDown('up');
@@ -104,15 +113,16 @@ class Game extends Component {
     const {
       changeProgressHandler,
       addKeyUpDownHandler,
-      clearKeyUpDownHandlers
+      clearKeyUpDownHandlers,
+      collisionInc
     } = this;
     
-    const { commonProgress } = this.state;
+    const { commonProgress, collisionCount } = this.state;
     const playerCar = loadImg.playerCars[this.props.playerCar];
     
     let long = 50;
     let imgW = 55;
-    let imgH = 100;
+    let imgH = 110;
     const userCar = { img: playerCar, width: imgW, height: imgH };
     const botCarsImgs = loadImg.botCars.map(img => ({ img, width: imgW, height: imgH }));
     
@@ -127,8 +137,10 @@ class Game extends Component {
           changeProgress={changeProgressHandler}
           addKeyUpDownHandler={addKeyUpDownHandler}
           clearKeyUpDownHandlers={clearKeyUpDownHandlers}
+          collisionInc={collisionInc}
         />
         <StreetCanvas progress={commonProgress} side={'right'} long={long}/>
+        <ScorePanel collisionCount={collisionCount}/>
       </div>
     );
   }

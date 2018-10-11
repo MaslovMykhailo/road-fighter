@@ -1,0 +1,29 @@
+.score-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    width: 85px;
+    background: #EEEEEF;
+}
+
+.score-panel__timer-icon {
+
+}
+
+.score-panel__timer-icon {
+    width: 50px;
+}
+
+.score-panel__crash-icon {
+    width: 70px;
+    margin-top: 70px;
+}
+
+.score-panel__score {
+    margin-top: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 28px;
+}
