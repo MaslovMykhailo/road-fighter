@@ -15,12 +15,15 @@ class App extends Component {
       level: null,
       playerCar: 0,
       currentWindow: START,
+      currentResult: null,
+      bestResults: new Array(5).fill(null),
       doc: this.props.doc
     };
     
     this.changeWindowHandler = this.changeWindowHandler.bind(this);
     this.chooseLevelHandler = this.chooseLevelHandler.bind(this);
     this.changePlayerCarHandler = this.changePlayerCarHandler.bind(this);
+    this.playerFinishedHandler = this.playerFinishedHandler.bind(this);
   }
   
   chooseLevelHandler(level) {
@@ -43,12 +46,42 @@ class App extends Component {
     });
   }
   
+  playerFinishedHandler(time, collisions) {
+    const { bestResults, level } = this.state;
+  
+    const currentResult = {
+      time, collisions,
+      score: Math.round(10000000/(time + collisions*100)*(level+1))
+    };
+    
+    if (!bestResults[level] || bestResults[level].score < currentResult.score) {
+      const newBestResults = bestResults.slice();
+      newBestResults[level] = currentResult;
+      
+      this.setState({
+        currentResult,
+        bestResults: newBestResults
+      });
+    } else {
+      this.setState({
+        currentResult
+      });
+    }
+  }
+  
   render() {
-    const { changeWindowHandler, chooseLevelHandler, changePlayerCarHandler } = this;
+    const {
+      changeWindowHandler,
+      chooseLevelHandler,
+      changePlayerCarHandler,
+      playerFinishedHandler
+    } = this;
+    
     const handlers = {
       changeWindowHandler,
       chooseLevelHandler,
-      changePlayerCarHandler
+      changePlayerCarHandler,
+      playerFinishedHandler
     };
     
     return (

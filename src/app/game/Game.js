@@ -13,6 +13,7 @@ class Game extends Component {
     
     this.state = {
       commonProgress: 0,
+      time: 0,
       collisionCount: 0,
       keyUpDownHandlers: {
         up: {
@@ -24,11 +25,20 @@ class Game extends Component {
       }
     };
     
+    this.timerId = null;
+    
     this.changeProgressHandler = this.changeProgressHandler.bind(this);
     this.addKeyUpDownHandler = this.addKeyUpDownHandler.bind(this);
     this.clearKeyUpDownHandlers = this.clearKeyUpDownHandlers.bind(this);
     this.onKeyUpDown = this.onKeyUpDown.bind(this);
     this.collisionInc = this.collisionInc.bind(this);
+    this.playerFinishedHandler = this.playerFinishedHandler.bind(this);
+  }
+  
+  timerInc() {
+    this.setState(state => ({
+      time: state.time + 1
+    }));
   }
   
   changeProgressHandler(change) {
@@ -107,20 +117,34 @@ class Game extends Component {
   componentDidMount() {
     this.props.doc.onkeydown = this.onKeyUpDown('down');
     this.props.doc.onkeyup = this.onKeyUpDown('up');
+    this.timerId = setInterval(
+      () => this.timerInc(),
+      1000
+    );
   };
+  
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+  
+  playerFinishedHandler() {
+    const { time, collisionCount } = this.state;
+    this.props.playerFinished(time, collisionCount);
+  }
   
   render() {
     const {
       changeProgressHandler,
       addKeyUpDownHandler,
       clearKeyUpDownHandlers,
-      collisionInc
+      collisionInc,
+      playerFinishedHandler
     } = this;
     
-    const { commonProgress, collisionCount } = this.state;
+    const { commonProgress, collisionCount, time } = this.state;
     const playerCar = loadImg.playerCars[this.props.playerCar];
     
-    let long = 50;
+    let long = 20;
     let imgW = 55;
     let imgH = 110;
     const userCar = { img: playerCar, width: imgW, height: imgH };
@@ -138,9 +162,10 @@ class Game extends Component {
           addKeyUpDownHandler={addKeyUpDownHandler}
           clearKeyUpDownHandlers={clearKeyUpDownHandlers}
           collisionInc={collisionInc}
+          playerFinishedHandler={playerFinishedHandler}
         />
         <StreetCanvas progress={commonProgress} side={'right'} long={long}/>
-        <ScorePanel collisionCount={collisionCount}/>
+        <ScorePanel time={time} collisionCount={collisionCount}/>
       </div>
     );
   }

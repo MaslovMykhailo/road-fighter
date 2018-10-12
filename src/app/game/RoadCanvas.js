@@ -183,6 +183,8 @@ class RoadCanvas extends Component {
               isFinished: true,
               playerCarState: Object.assign({}, playerCarState, { speed: 0 })
             });
+            
+            this.props.playerFinishedHandler();
             return false;
           }
           return playerCarState.racing;

@@ -6,6 +6,7 @@ import ChooseLevel from './ChooseLevel';
 import Game from '../game/Game';
 import ChooseCar from './ChooseCar';
 import Instruction from './Instruction';
+import Finish from './Finish';
 
 
 const Window = ({ appState, handlers }) => {
@@ -45,12 +46,38 @@ const Window = ({ appState, handlers }) => {
       )
     }
     case types.GAME: {
-      const { doc, playerCar} = appState;
+      const { playerFinishedHandler } = handlers;
+      const { doc, playerCar } = appState;
+      
+      const playerFinished = (time, collisions) => {
+        playerFinishedHandler(time, collisions);
+        changeWindow(types.FINISH)();
+      };
+      
       return (
         <Game
           playerCar={playerCar}
           doc={doc}
+          playerFinished={playerFinished}
         />)
+    }
+    case types.FINISH: {
+      const { currentResult, bestResults, level } = appState;
+      const { chooseLevelHandler } = handlers;
+      const nextLevelHandler = () => {
+        chooseLevelHandler(level+1);
+        changeWindow(types.CHOOSE_CAR)();
+      };
+      
+      return (
+        <Finish
+          level={level}
+          currentResult={currentResult}
+          bestResults={bestResults}
+          chooseLevelHandler={changeWindow(types.CHOOSE_LEVEL)}
+          nextLevelHandler={nextLevelHandler}
+        />
+      )
     }
     case types.START:
     default: {
