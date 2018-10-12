@@ -51,7 +51,7 @@ class App extends Component {
   
     const currentResult = {
       time, collisions,
-      score: Math.round(10000000/(time + collisions*100)*(level+1))
+      score: Math.round(10000000/(time + collisions*5)*(level+1))
     };
     
     if (!bestResults[level] || bestResults[level].score < currentResult.score) {

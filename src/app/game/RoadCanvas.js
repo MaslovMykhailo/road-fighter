@@ -28,7 +28,7 @@ class RoadCanvas extends Component {
         racing: false,
         braking: false,
         moveByX: false,
-        maxSpeed: 12
+        maxSpeed: 11 + props.level
       },
       
       botCars: [],
@@ -58,7 +58,7 @@ class RoadCanvas extends Component {
       endMoveXHandler
     } = this;
     
-    const { long ,userCar, botCars, addKeyUpDownHandler } = this.props;
+    const { long, level, userCar, botCars, addKeyUpDownHandler } = this.props;
     const canvasElem = this.canvas.current;
     
     const width = canvasElem.offsetWidth;
@@ -78,9 +78,9 @@ class RoadCanvas extends Component {
       botCars: new Array(4).fill(null).map((v, i) =>
         new Car(botCars[i].width, botCars[i].height, botCars[i].img)),
       botCarsState: new Array(4).fill(null).map((v, i) => ({
-        speed: rn(1, 6),
+        speed: rn(1+level, 6+level),
         positionX: 15 + i*width/4,
-        positionY: 2*height + (i%2 ? 0.5*height : - 0.5*height)
+        positionY: 2*height + (i%2 ? (5-level)*height/20 : - (5-level)*height/20)
       }))
     });
     
@@ -259,6 +259,7 @@ class RoadCanvas extends Component {
   botCarsMove() {
     const animateOptions = {
       animateFunc: () => {
+        const level = this.props.level;
         const { botCarsState, botCars, road, height } = this.state;
       
         const newCars = botCars.slice();
@@ -267,15 +268,15 @@ class RoadCanvas extends Component {
           let newSpeed = oldState.speed;
           
           if (newPositionY < road.shift - 0.2 * height) {
-            newPositionY = road.shift + 1.5 * height ;
-            newSpeed = rn(1, 6);
+            newPositionY = road.shift + 1.5 * height - level/20 * height;
+            newSpeed = rn(1+level, 6+level);
             
             let newBotCar = this.props.botCars[rn(0, 7)];
             newCars.splice(i, 1, new Car(newBotCar.width, newBotCar.height, newBotCar.img))
           }
           
           if (newPositionY > road.shift + 2*height) {
-            newPositionY = road.shift + 1.5 * height ;
+            newPositionY = road.shift + 1.5 * height - level/20 * height ;
           }
           
           return {

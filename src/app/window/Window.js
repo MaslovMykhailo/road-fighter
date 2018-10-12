@@ -59,6 +59,7 @@ const Window = ({ appState, handlers }) => {
           playerCar={playerCar}
           doc={doc}
           playerFinished={playerFinished}
+          level={appState.level}
         />)
     }
     case types.FINISH: {

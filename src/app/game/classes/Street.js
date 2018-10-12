@@ -74,7 +74,7 @@ class Street {
     this.drawGround(ctx);
     ctx.save();
   
-    ctx.translate(0, -this.height*(this.long) + this.shift + this.addShift);
+    ctx.translate(0, -this.height*(this.long+0.1) + this.shift + this.addShift);
     this.drawComposition(ctx);
     
     ctx.restore();

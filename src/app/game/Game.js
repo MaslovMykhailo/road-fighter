@@ -144,7 +144,7 @@ class Game extends Component {
     const { commonProgress, collisionCount, time } = this.state;
     const playerCar = loadImg.playerCars[this.props.playerCar];
     
-    let long = 20;
+    let long = 35 + this.props.level * 5;
     let imgW = 55;
     let imgH = 110;
     const userCar = { img: playerCar, width: imgW, height: imgH };
@@ -156,6 +156,7 @@ class Game extends Component {
         <StreetCanvas progress={commonProgress} side={'left'} long={long}/>
         <RoadCanvas
           long={long}
+          level={this.props.level}
           userCar={userCar}
           botCars={botCarsImgs}
           changeProgress={changeProgressHandler}
