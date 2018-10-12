@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import music from '../../mp3/game.mp3';
 import '../../css/game.css';
 import * as loadImg from '../functions/loadImages';
 import RoadCanvas from './RoadCanvas';
@@ -152,6 +153,7 @@ class Game extends Component {
     
     return (
       <div className={'game'}>
+        <audio src={music} autoPlay={true} loop={true}></audio>
         <ProgressCanvas progress={commonProgress} long={long} userCar={playerCar}/>
         <StreetCanvas progress={commonProgress} side={'left'} long={long}/>
         <RoadCanvas

@@ -1,6 +1,8 @@
 import React from 'react';
 
 import '../../css/window.css';
+import music from '../../mp3/finish.mp3';
+
 
 const Finish = props => {
   const { currentResult, bestResults, chooseLevelHandler, nextLevelHandler, level } = props;
@@ -29,6 +31,7 @@ const Finish = props => {
   
   return (
   <div className="window mdl-card mdl-shadow--2dp">
+    <audio src={music} autoPlay={true}></audio>
     <div className="window__header--small mdl-card__title">
       <h2 className="window__caption mdl-card__title-text">You finished!</h2>
     </div>
