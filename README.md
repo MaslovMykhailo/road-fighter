@@ -7,12 +7,14 @@ To setup the app you need to have node and npm in your computer!
 Production version
 
 ```sh
+$ npm install
 $ npm run deploy
 ```
 
 Development version
 
 ```sh
+$ npm install
 $ npm run start
 ```
 
