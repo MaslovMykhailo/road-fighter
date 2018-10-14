@@ -4,7 +4,7 @@ Simple car racing game build on HTMLCanvas and React
 
 ## Demo
 
-![demo-gif](https://github.com/maslovmichail20/road-fighter/tree/master/demo/road-fighter.gif)
+![](https://github.com/maslovmichail20/road-fighter/blob/master/demo/road-fighter.gif)
 
 To setup the app you need to have node and npm in your computer!
 
