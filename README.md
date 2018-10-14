@@ -2,7 +2,7 @@
 
 ## Demo
 
-![alt text](https://github.com/maslovmichail20/road-fighter/demo/road-fighter.gif "Road Fighter Demo")
+![alt text](https://github.com/maslovmichail20/road-fighter/tree/master/demo/road-fighter.gif "Road Fighter Demo")
 
 To setup the app you need to have node and npm in your computer!
 
